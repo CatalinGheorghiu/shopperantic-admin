@@ -1,5 +1,6 @@
 import Spinner from '@/components/Spinner';
 import axios from 'axios';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
@@ -150,7 +151,12 @@ export default function ProductForm({
                 key={link}
                 className="h-24 rounded-sm border border-gray-200 bg-white p-4 shadow-sm"
               >
-                <img src={link} alt="" className="rounded-lg" />
+                <Image
+                  src={link}
+                  alt={link}
+                  height={24}
+                  className="rounded-lg"
+                />
               </div>
             ))}
         </ReactSortable>
