@@ -1,7 +1,7 @@
 import Layout from '@/components/Layout';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 
 export default function DeleteProductPage() {
   const router = useRouter();
@@ -16,19 +16,19 @@ export default function DeleteProductPage() {
     });
   }, [id]);
 
-  function goBack() {
-    router.push('/products');
+  async function goBack() {
+    await router.push('/products');
   }
 
   async function deleteProduct() {
     await axios.delete('/api/products?id=' + id);
-    goBack();
+    await goBack();
   }
 
   return (
     <Layout>
       <h1 className="text-center">
-        Do you really want to delete &nbsp;"{productInfo?.title}"?
+        Do you really want to delete &nbsp; &quot;{productInfo?.title}&quot;?
       </h1>
       <div className="flex justify-center gap-2">
         <button onClick={deleteProduct} className="btn-red">
