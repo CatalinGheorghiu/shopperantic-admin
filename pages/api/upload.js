@@ -5,7 +5,7 @@ import fs from 'fs';
 import mime from 'mime-types';
 import multiparty from 'multiparty';
 
-const bucketName = 'dawid-next-ecommerce';
+const bucketName = process.env.S3_BUCKET_NAME;
 
 export default async function handle(req, res) {
   await mongooseConnect();
@@ -20,7 +20,7 @@ export default async function handle(req, res) {
   });
 
   const client = new S3Client({
-    region: 'us-east-1',
+    region: 'eu-central-1',
     credentials: {
       accessKeyId: process.env.S3_ACCESS_KEY,
       secretAccessKey: process.env.S3_SECRET_ACCESS_KEY

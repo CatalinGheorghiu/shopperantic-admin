@@ -8,8 +8,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#5542F6',
-        highlight: '#eae8fb'
+        primary: 'rgb(77, 124, 15)',
+        highlight: '#eae8fb',
+        error: 'rgb(220, 38, 38)'
       },
       boxShadow: {
         'border-bottom': '0rem 0.0625rem 0.0625rem #1f21241a'

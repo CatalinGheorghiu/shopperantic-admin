@@ -9,18 +9,28 @@ export default async function handle(req, res) {
 
   if (method === 'GET') {
     if (req.query?.id) {
-      res.json(await Product.findOne({ _id: req.query.id }));
+      res.json(
+        await Product.findOne({ _id: req.query.id }).populate('category')
+      );
     } else {
-      res.json(await Product.find());
+      res.json(await Product.find().populate('category'));
     }
   }
 
   if (method === 'POST') {
-    const { title, description, price, images, category, properties } =
-      req.body;
+    const {
+      title,
+      description,
+      short_description,
+      price,
+      images,
+      category,
+      properties
+    } = req.body;
     const productDoc = await Product.create({
       title,
       description,
+      short_description,
       price,
       images,
       category,
@@ -30,11 +40,27 @@ export default async function handle(req, res) {
   }
 
   if (method === 'PUT') {
-    const { title, description, price, images, category, properties, _id } =
-      req.body;
+    const {
+      title,
+      description,
+      short_description,
+      price,
+      images,
+      category,
+      properties,
+      _id
+    } = req.body;
     await Product.updateOne(
       { _id },
-      { title, description, price, images, category, properties }
+      {
+        title,
+        description,
+        short_description,
+        price,
+        images,
+        category,
+        properties
+      }
     );
     res.json(true);
   }

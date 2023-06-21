@@ -46,7 +46,7 @@ export default function HomeStats() {
   );
 
   return (
-    <div className={'px-4 md:mx-auto md:max-w-3xl'}>
+    <div>
       <h2>Orders</h2>
       <div className="tiles-grid">
         <div className="tile">

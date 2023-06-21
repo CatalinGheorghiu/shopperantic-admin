@@ -1,12 +1,10 @@
-import Icon from '@/components/Icon';
-import Layout from '@/components/Layout';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import axios from 'axios';
 import ProductForm from '@/components/ProductForm';
 import Spinner from '@/components/Spinner';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 
-export default function EditProductPage() {
+const Product = () => {
   const [productInfo, setProductInfo] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -24,15 +22,12 @@ export default function EditProductPage() {
   }, [id]);
 
   return (
-    <Layout>
-      <button onClick={() => router.back()}>
-        <Icon iconName="arrow-back" color={'none'} />
-      </button>
-
-      <h1 className="text-xl font-semibold">Edit product</h1>
-
+    <>
       {isLoading && <Spinner />}
-      {productInfo && <ProductForm {...productInfo} />}
-    </Layout>
+      <button onClick={() => router.back()}>Go back</button>
+      {productInfo && <h2>{productInfo._id}</h2>}
+    </>
   );
-}
+};
+
+export default Product;

@@ -1,4 +1,6 @@
+import Icon from '@/components/Icon';
 import Navbar from '@/components/Navbar';
+import Spinner from '@/components/Spinner';
 import { signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -6,13 +8,28 @@ import SweetAlert2 from 'react-sweetalert2';
 import Swal from 'sweetalert2';
 
 export default function Layout({ children }) {
-  const { data: session } = useSession();
-  const { query } = useRouter();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  async function handleLogin() {
+    delete router.query.status;
+    await router.push(router);
+
+    await signIn('google');
+  }
+
+  if (status === 'loading') {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner fullWidth={true} />
+      </div>
+    );
+  }
 
   if (!session) {
     return (
-      <div className="bg-bgGray flex h-screen w-screen items-center">
-        {query.status === 'unauthorized' && (
+      <div className="flex h-screen w-screen items-center bg-gray-100">
+        {router.query.status === 'unauthorized' && (
           <SweetAlert2
             show
             titleText={'Access Denied'}
@@ -31,7 +48,7 @@ export default function Layout({ children }) {
 
         <div className="w-full text-center">
           <button
-            onClick={() => signIn('google')}
+            onClick={handleLogin}
             className="rounded-lg bg-white p-2 px-4 shadow-md"
           >
             Login with Google
@@ -66,7 +83,7 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        {children}
+        <div className={'py-8 sm:px-4 md:mx-auto md:max-w-3xl'}>{children}</div>
       </div>
     </main>
   );
