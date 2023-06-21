@@ -19,13 +19,13 @@ function SettingsPage({ swal }) {
 
   async function fetchAll() {
     await axios.get('/api/products').then((res) => {
-      setProducts(res.data);
+      setProducts(res?.data);
     });
     await axios.get('/api/settings?name=featuredProductId').then((res) => {
-      setFeaturedProductId(res.data.value);
+      setFeaturedProductId(res?.data?.value);
     });
     await axios.get('/api/settings?name=shippingFee').then((res) => {
-      setShippingFee(res.data.value);
+      setShippingFee(res?.data?.value);
     });
   }
 
@@ -52,24 +52,31 @@ function SettingsPage({ swal }) {
       {isLoading && <Spinner />}
       {!isLoading && (
         <>
-          <label>Featured product</label>
-          <select
-            value={featuredProductId}
-            onChange={(ev) => setFeaturedProductId(ev.target.value)}
-          >
-            {products.length > 0 &&
-              products.map((product, index) => (
-                <option value={product._id} key={product.id + index}>
-                  {product.title}
-                </option>
-              ))}
-          </select>
-          <label>Shipping price (in usd)</label>
-          <input
-            type="number"
-            value={shippingFee}
-            onChange={(ev) => setShippingFee(ev.target.value)}
-          />
+          <label>
+            Featured product
+            <select
+              className="mb-4 mt-2 rounded-lg py-3 text-sm text-gray-900"
+              value={featuredProductId}
+              onChange={(ev) => setFeaturedProductId(ev.target.value)}
+            >
+              {products.length > 0 &&
+                products.map((product, index) => (
+                  <option value={product._id} key={product._id + index}>
+                    {product.title}
+                  </option>
+                ))}
+            </select>
+          </label>
+
+          <label>
+            <span>Shipping price (in usd)</span>
+            <input
+              className="mb-4 mt-2 rounded-lg py-3 text-sm text-gray-900"
+              type="number"
+              value={shippingFee}
+              onChange={(ev) => setShippingFee(ev.target.value)}
+            />
+          </label>
           <div>
             <button onClick={saveSettings} className="btn-primary">
               Save settings
