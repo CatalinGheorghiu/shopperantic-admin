@@ -1,3 +1,4 @@
+import Icon from '@/components/Icon';
 import Layout from '@/components/Layout';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -110,23 +111,25 @@ function Categories({ swal }) {
 
   return (
     <Layout>
-      <h1>Categories</h1>
-      <label>
-        {editedCategory
-          ? `Edit category ${editedCategory.name}`
-          : 'Create new category'}
-      </label>
-      <form onSubmit={saveCategory}>
-        <div className="flex gap-1">
+      <button onClick={() => router.back()}>
+        <Icon iconName="arrow-back" color={'none'} />
+      </button>
+
+      <h2 className={'text-xl font-semibold'}>Categories</h2>
+
+      <form onSubmit={saveCategory} className={'mt-4'}>
+        <div className="flex flex-col gap-1 md:flex-row">
           <input
             type="text"
             placeholder={'Category name'}
+            className={'mb-4 rounded-lg py-3 text-sm text-gray-900'}
             onChange={(ev) => setName(ev.target.value)}
             value={name}
           />
           <select
             onChange={(ev) => setParentCategory(ev.target.value)}
             value={parentCategory}
+            className={'mb-4 rounded-lg py-3 text-sm text-gray-900'}
           >
             <option value="">No parent category</option>
             {categories.length > 0 &&
@@ -139,45 +142,46 @@ function Categories({ swal }) {
         </div>
         <div className="mb-2">
           <label className="block">Properties</label>
-          <button
-            onClick={addProperty}
-            type="button"
-            className="btn-default mb-2 text-sm"
-          >
-            Add new property
-          </button>
+
           {properties.length > 0 &&
             properties.map((property, index) => (
               <div className="mb-2 flex gap-1" key={property.name + index}>
                 <input
                   type="text"
                   value={property.name}
-                  className="mb-0"
+                  className="rounded-lg py-3 text-sm text-gray-900"
                   onChange={(ev) =>
                     handlePropertyNameChange(index, property, ev.target.value)
                   }
                   placeholder="property name (example: color)"
                 />
+
                 <input
                   type="text"
-                  className="mb-0"
+                  className="rounded-lg py-3 text-sm text-gray-900"
                   onChange={(ev) =>
                     handlePropertyValuesChange(index, property, ev.target.value)
                   }
                   value={property.values}
                   placeholder="values, comma separated"
                 />
+
                 <button
                   onClick={() => removeProperty(index)}
                   type="button"
-                  className="btn-red"
+                  className=""
                 >
-                  Remove
+                  <Icon
+                    iconName={'delete'}
+                    color={'none'}
+                    className={'text-red-600'}
+                  />
                 </button>
               </div>
             ))}
         </div>
-        <div className="flex gap-1">
+
+        <div className="flex flex-col gap-1 md:flex-row">
           {editedCategory && (
             <button
               type="button"
@@ -187,58 +191,70 @@ function Categories({ swal }) {
                 setParentCategory('');
                 setProperties([]);
               }}
-              className="btn-default"
+              className="min-w-[120px] rounded-md border bg-slate-200 px-4  py-2 transition-all hover:bg-slate-300"
             >
               Cancel
             </button>
           )}
-          <button type="submit" className="btn-primary py-1">
+
+          <button
+            type="submit"
+            className="btn-primary min-w-[120px] rounded-md border px-4 py-2  transition-all hover:bg-lime-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-black disabled:hover:bg-gray-300"
+            disabled={!name}
+          >
             Save
+          </button>
+
+          <button
+            onClick={addProperty}
+            type="button"
+            className="min-w-[120px] rounded-md border bg-gray-500 px-4 py-2 text-white transition-all hover:bg-gray-600"
+          >
+            Add new property
           </button>
         </div>
       </form>
+
+      {isLoading && (
+        <div>
+          <div colSpan={3}>
+            <div className="py-4">
+              <Spinner fullWidth={true} />
+            </div>
+          </div>
+        </div>
+      )}
+
       {!editedCategory && (
-        <table className="basic mt-4">
-          <thead>
-            <tr>
-              <td>Category name</td>
-              <td>Parent category</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading && (
-              <tr>
-                <td colSpan={3}>
-                  <div className="py-4">
-                    <Spinner fullWidth={true} />
-                  </div>
-                </td>
-              </tr>
-            )}
+        <div className="basic mt-4">
+          <div className={'mt-4 w-full rounded-md bg-gray-200 p-6'}>
             {categories.length > 0 &&
               categories.map((category, index) => (
-                <tr key={category.name + index}>
-                  <td>{category.name}</td>
-                  <td>{category?.parent?.name}</td>
-                  <td>
+                <div
+                  className={'flex flex-col justify-between py-4 md:flex-row'}
+                  key={category.name + index}
+                >
+                  <span className={'font-semibold'}>{category.name}</span>
+                  <span>{category?.parent?.name}</span>
+
+                  <div className={'mt-2'}>
                     <button
                       onClick={() => editCategory(category)}
-                      className="btn-default mr-1"
+                      className="bg-sla mb-1 mr-2 w-full rounded-md border bg-gray-500 px-4 py-2 text-white transition-all hover:bg-gray-600 md:min-w-[120px]"
                     >
                       Edit
                     </button>
                     <button
                       onClick={() => deleteCategory(category)}
-                      className="btn-red"
+                      className="w-full rounded-md border bg-error px-4 py-2 text-white transition-all hover:bg-red-500 md:min-w-[120px]"
                     >
                       Delete
                     </button>
-                  </td>
-                </tr>
+                  </div>
+                </div>
               ))}
-          </tbody>
-        </table>
+          </div>
+        </div>
       )}
     </Layout>
   );
