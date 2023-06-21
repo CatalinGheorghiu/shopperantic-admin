@@ -83,7 +83,7 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        <div className={'py-8 sm:px-4 md:mx-auto md:max-w-3xl'}>{children}</div>
+        <div className={'py-8 px-4 md:mx-auto md:max-w-3xl'}>{children}</div>
       </div>
     </main>
   );

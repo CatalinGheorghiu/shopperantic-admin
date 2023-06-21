@@ -20,7 +20,7 @@ export default function Products() {
 
   return (
     <Layout>
-      <button onClick={() => router.back()}>
+      <button onClick={() => router.back()} className={'ml-4 md:ml-0'}>
         <Icon iconName="arrow-back" color={'none'} />
       </button>
 
@@ -68,7 +68,7 @@ export default function Products() {
                     {product.short_description}
                   </span>
 
-                  <div className="flex h-full items-end pt-4">
+                  <div className="flex items-end justify-end pt-4 md:h-full md:justify-start">
                     <Link
                       href={'/products/edit/' + product._id}
                       className="mr-1"
