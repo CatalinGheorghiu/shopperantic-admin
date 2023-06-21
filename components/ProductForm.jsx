@@ -1,6 +1,8 @@
+import Icon from '@/components/Icon';
 import Spinner from '@/components/Spinner';
 import axios from 'axios';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ReactSortable } from 'react-sortablejs';
@@ -9,6 +11,7 @@ export default function ProductForm({
   _id,
   title: existingTitle,
   description: existingDescription,
+  short_description: existingShortDescription,
   price: existingPrice,
   images: existingImages,
   category: assignedCategory,
@@ -16,6 +19,9 @@ export default function ProductForm({
 }) {
   const [title, setTitle] = useState(existingTitle || '');
   const [description, setDescription] = useState(existingDescription || '');
+  const [shortDescription, setShortDescription] = useState(
+    existingShortDescription || ''
+  );
   const [category, setCategory] = useState(assignedCategory || '');
   const [productProperties, setProductProperties] = useState(
     assignedProperties || {}
@@ -40,6 +46,7 @@ export default function ProductForm({
     const data = {
       title,
       description,
+      short_description: shortDescription,
       price,
       images,
       category,
@@ -89,7 +96,10 @@ export default function ProductForm({
 
   const propertiesToFill = [];
   if (categories.length > 0 && category) {
-    let catInfo = categories.find(({ _id }) => _id === category);
+    let catInfo = categories.find(
+      ({ _id, name }) => _id === category || _id === category._id
+    );
+
     propertiesToFill.push(...catInfo.properties);
     while (catInfo?.parent?._id) {
       const parentCat = categories.find(
@@ -102,15 +112,19 @@ export default function ProductForm({
 
   return (
     <form onSubmit={saveProduct}>
-      <label>Product name</label>
       <input
         type="text"
-        placeholder="product name"
+        placeholder="Product name"
         value={title}
+        className="mb-4 rounded-lg py-3 text-sm text-gray-900"
         onChange={(ev) => setTitle(ev.target.value)}
       />
-      <label>Category</label>
-      <select value={category} onChange={(ev) => setCategory(ev.target.value)}>
+
+      <select
+        value={category}
+        className="mb-4 rounded-lg py-3 text-sm text-gray-900"
+        onChange={(ev) => setCategory(ev.target.value)}
+      >
         <option value="">Uncategorized</option>
         {categories.length > 0 &&
           categories.map((c, index) => (
@@ -119,43 +133,49 @@ export default function ProductForm({
             </option>
           ))}
       </select>
+
       {categoriesLoading && <Spinner />}
+
       {propertiesToFill.length > 0 &&
-        propertiesToFill.map((p, index) => (
-          <div key={p.name + index}>
-            <label>{p.name[0].toUpperCase() + p.name.substring(1)}</label>
+        propertiesToFill.map((properties, index) => (
+          <div key={properties.name + index}>
+            <label>{}</label>
             <div>
               <select
-                value={productProperties[p.name]}
+                value={productProperties[properties.name]}
+                className="mb-4 mt-2 rounded-lg py-3 text-sm text-gray-900"
                 onChange={(ev) => setProductProp(p.name, ev.target.value)}
               >
-                {p.values.map((v, index) => (
-                  <option key={v + index} value={v}>
-                    {v}
+                {properties.values.map((value, index) => (
+                  <option key={value + index} value={value}>
+                    {properties.name[0].toUpperCase() +
+                      properties.name.substring(1)}
+                    : {value}
                   </option>
                 ))}
               </select>
             </div>
           </div>
         ))}
-      <label>Photos</label>
-      <div className="mb-2 flex flex-wrap gap-1">
+
+      <div className="mb-4 flex flex-wrap gap-1">
         <ReactSortable
           list={images}
           className="flex flex-wrap gap-1"
           setList={updateImagesOrder}
         >
           {!!images?.length &&
-            images.map((link) => (
+            images?.map((link) => (
               <div
                 key={link}
-                className="h-24 rounded-sm border border-gray-200 bg-white p-4 shadow-sm"
+                className="rounded-lg border border-gray-200 bg-white shadow-sm"
               >
-                <Image
+                <img
                   src={link}
                   alt={link}
-                  height={24}
-                  className="rounded-lg"
+                  height={128}
+                  width={128}
+                  className="h-32 w-32 rounded-lg object-cover"
                 />
               </div>
             ))}
@@ -166,38 +186,39 @@ export default function ProductForm({
           </div>
         )}
         <label className="flex h-24 w-24 cursor-pointer flex-col items-center justify-center gap-1 rounded-sm border border-primary bg-white text-center text-sm text-primary shadow-sm">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="h-6 w-6"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
-            />
-          </svg>
-          <div>Add image</div>
+          <Icon iconName={'upload'} color={'none'} />
+          <div className="text-sm text-gray-900">Add image</div>
           <input type="file" onChange={uploadImages} className="hidden" />
         </label>
       </div>
-      <label>Description</label>
+
       <textarea
-        placeholder="description"
+        placeholder="Description"
         value={description}
+        className="mb-4 mt-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 py-3 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+        rows="6"
         onChange={(ev) => setDescription(ev.target.value)}
       />
-      <label>Price (in USD)</label>
+
+      <textarea
+        placeholder="Short description"
+        value={shortDescription}
+        className="mb-4 mt-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 py-3 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+        rows={4}
+        onChange={(ev) => setShortDescription(ev.target.value)}
+      />
+
       <input
         type="number"
-        placeholder="price"
+        placeholder="Price"
         value={price}
+        className="mb-4 rounded-lg py-3 text-sm text-gray-900"
         onChange={(ev) => setPrice(ev.target.value)}
       />
-      <button type="submit" className="btn-primary">
+      <button
+        type="submit"
+        className="btn-primary min-w-[8rem] text-sm text-gray-900"
+      >
         Save
       </button>
     </form>
