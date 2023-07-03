@@ -11,6 +11,7 @@ async function isAdminEmail(email) {
 }
 
 export const authOptions = {
+  secret: process.env.SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
@@ -30,10 +31,7 @@ export const authOptions = {
       if (await isAdminEmail(user?.email)) {
         return true;
       }
-      // Return false to display a default error message
       return '/?status=unauthorized';
-      // Or you can return a URL to redirect to:
-      // return '/unauthorized'
     }
   }
 };
