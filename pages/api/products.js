@@ -13,7 +13,9 @@ export default async function handle(req, res) {
         await Product.findOne({ _id: req.query.id }).populate('category')
       );
     } else {
-      res.json(await Product.find().populate('category'));
+      res.json(
+        await Product.find().populate('category').sort({ createdAt: -1 })
+      );
     }
   }
 
