@@ -61,7 +61,7 @@ const Navbar = () => {
       <nav
         className={`${
           showNav ? 'translate-x-0' : '-translate-x-full'
-        } fixed top-0 left-0  h-screen w-full flex-col bg-black/70 transition-all duration-500 ease-in-out md:static md:flex md:h-[calc(100vh_-_65px)] md:w-72 md:translate-x-0 md:border-r md:border-gray-200 md:bg-inherit`}
+        } fixed top-0 left-0  h-screen w-full flex-col bg-black/70 transition-all duration-500 ease-in-out md:static md:flex md:h-[calc(100%_-_65px)] md:w-72 md:translate-x-0 md:border-r md:border-gray-200 md:bg-inherit`}
       >
         <ul
           className={
